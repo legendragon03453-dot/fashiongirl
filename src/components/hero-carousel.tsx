@@ -1,25 +1,31 @@
+
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const slides = [
   {
-    title: "Tendências de Verão 2026: O que esperar nas passarelas",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1920&q=80"
+    title: "O Retorno do Minimalismo: Como menos se tornou o novo 'must-have' da moda teen.",
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1920&q=80",
+    slug: 'retorno-do-minimalismo'
   },
   {
     title: "Como combinar acessórios minimalistas com looks teen",
-    image: "https://images.unsplash.com/photo-1529139513055-119797896d1c?auto=format&fit=crop&w=1920&q=80"
+    image: "https://images.unsplash.com/photo-1529139513055-119797896d1c?auto=format&fit=crop&w=1920&q=80",
+    slug: 'acessorios-minimalistas'
   },
   {
     title: "A história por trás da nossa nova coleção exclusiva",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80"
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80",
+    slug: 'historia-nova-colecao'
   },
   {
     title: "5 Dicas de looks para arrasar no seu primeiro evento oficial",
-    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1920&q=80"
+    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1920&q=80",
+    slug: 'looks-primeiro-evento'
   }
 ];
 
@@ -54,14 +60,14 @@ export const HeroCarousel = () => {
                 currentSlide === index ? "active-slide" : ""
               )}
             >
-              <div className="w-full h-full image-zoom-animation">
+              <Link href={`/blog/${slide.slug}`} className="w-full h-full block image-zoom-animation">
                 <img 
                   src={slide.image} 
                   alt={slide.title} 
                   className="w-full h-full object-cover" 
                 />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 md:p-20 text-white">
+              </Link>
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 md:p-20 text-white">
                 <h3 className="text-2xl md:text-4xl font-bold max-w-2xl leading-tight">
                   {slide.title}
                 </h3>

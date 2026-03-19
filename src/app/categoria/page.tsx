@@ -14,28 +14,32 @@ const blogPosts = [
     category: "Tendências",
     date: "20 Março 2024",
     excerpt: "Descubra as peças essenciais que não podem faltar no seu guarda-roupa nesta estação. Do jeans destroyed às cores vibrantes.",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop",
+    slug: 'looks-verao-teen'
   },
   {
     title: "Dicas de fotografia para bombar no seu Instagram",
     category: "Lifestyle",
     date: "15 Março 2024",
     excerpt: "Quer fotos de nível profissional usando apenas o seu celular? Separamos 5 truques de iluminação e poses que fazem a diferença.",
-    image: "https://images.unsplash.com/photo-1529139513065-07b3b1c5921b?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1529139513065-07b3b1c5921b?q=80&w=1000&auto=format&fit=crop",
+    slug: 'dicas-fotografia-instagram'
   },
   {
     title: "O poder dos acessórios no look do dia a dia",
     category: "Dicas",
     date: "10 Março 2024",
     excerpt: "Como transformar uma camiseta básica e jeans em um visual fashionista usando os cintos, colares e bolsas certas.",
-    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop",
+    slug: 'poder-acessorios-dia-a-dia'
   },
   {
     title: "Fashion Girl em Paris: O que vimos nas passarelas",
     category: "Inspiration",
     date: "05 Março 2024",
     excerpt: "Nossa equipe viajou para conferir as novidades da moda europeia que vão chegar com tudo por aqui. Confira o resumo.",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop",
+    slug: 'fashion-girl-paris'
   }
 ];
 
@@ -45,7 +49,7 @@ export default function CategoryPage() {
       <Navbar />
 
       <FadeIn className="pt-16 pb-8 text-center bg-white">
-        <h1 className="text-4xl md:text-5xl uppercase tracking-tighter font-black">Últimas do Blog</h1>
+        <h1 className="text-4xl md:text-5xl uppercase tracking-tighter font-black font-['Quandco']">Últimas do Blog</h1>
         <p className="mt-4 text-gray-500 uppercase text-xs tracking-widest font-bold">Tendências Teen & Estilo de Vida</p>
       </FadeIn>
 
@@ -54,7 +58,7 @@ export default function CategoryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {blogPosts.map((post, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <Link href="#" className="group block bg-white border border-black overflow-hidden hover:shadow-2xl transition-all duration-500 rounded-none">
+                <Link href={`/blog/${post.slug}`} className="group block bg-white border border-black overflow-hidden hover:shadow-2xl transition-all duration-500 rounded-none">
                   <div className="aspect-[16/9] relative overflow-hidden bg-gray-100">
                     <img 
                       alt={post.title} 
@@ -73,7 +77,7 @@ export default function CategoryPage() {
                         {post.date}
                       </span>
                     </div>
-                    <h2 className="text-2xl md:text-xl uppercase mb-4 group-hover:underline decoration-1 underline-offset-4 transition-all font-black">
+                    <h2 className="text-2xl md:text-xl uppercase mb-4 group-hover:underline decoration-1 underline-offset-4 transition-all font-black font-['Quandco']">
                       {post.title}
                     </h2>
                     <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-2">
