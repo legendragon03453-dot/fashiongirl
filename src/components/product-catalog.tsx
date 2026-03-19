@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useRef } from 'react';
@@ -38,13 +37,13 @@ export const ProductCatalog = () => {
         <div className="hidden md:flex space-x-4">
           <button 
             onClick={() => scroll('left')}
-            className="w-12 h-12 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-colors active:scale-95"
+            className="w-12 h-12 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-colors active:scale-95 rounded-none"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button 
             onClick={() => scroll('right')}
-            className="w-12 h-12 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-colors active:scale-95"
+            className="w-12 h-12 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-colors active:scale-95 rounded-none"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -58,14 +57,14 @@ export const ProductCatalog = () => {
         {products.map((item, i) => (
           <div key={i} className="snap-start shrink-0 w-[80vw] sm:w-[45vw] md:w-[30vw] lg:w-[23%] group">
             <Link href="#" className="block">
-              <div className="overflow-hidden mb-4 aspect-[3/4] bg-neutral-200">
+              <div className="overflow-hidden mb-4 aspect-[3/4] bg-neutral-100 rounded-none">
                 <img 
                   src={item.image} 
                   alt={item.name} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
               </div>
-              <h3 className="text-lg font-bold leading-tight group-hover:underline uppercase tracking-tight">
+              <h3 className="text-lg font-bold leading-tight group-hover:underline">
                 {item.name}
               </h3>
             </Link>
@@ -76,7 +75,7 @@ export const ProductCatalog = () => {
       <FadeIn className="mt-8">
         <Link 
           href="#" 
-          className="inline-flex items-center justify-center bg-black text-white px-8 py-4 text-xs font-black uppercase tracking-widest hover:bg-neutral-800 transition-colors group"
+          className="inline-flex items-center justify-center bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors group rounded-none"
         >
           <span>Shop Now</span>
           <ArrowRight className="ml-3 w-5 h-5 transition-transform group-hover:translate-x-1" />

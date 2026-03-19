@@ -1,8 +1,6 @@
-
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -43,7 +41,7 @@ export const HeroCarousel = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-5 pb-20">
-      <div className="relative overflow-hidden h-[600px]">
+      <div className="relative overflow-hidden h-[600px] rounded-none">
         <div 
           className="flex transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -52,7 +50,7 @@ export const HeroCarousel = () => {
             <div 
               key={index} 
               className={cn(
-                "min-width-full relative w-full flex-shrink-0 h-full overflow-hidden",
+                "min-w-full relative w-full flex-shrink-0 h-full overflow-hidden",
                 currentSlide === index ? "active-slide" : ""
               )}
             >
@@ -64,7 +62,7 @@ export const HeroCarousel = () => {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 md:p-20 text-white">
-                <h3 className="text-2xl md:text-5xl font-black max-w-2xl leading-tight uppercase tracking-tighter">
+                <h3 className="text-2xl md:text-4xl font-bold max-w-2xl leading-tight">
                   {slide.title}
                 </h3>
               </div>
@@ -76,7 +74,7 @@ export const HeroCarousel = () => {
       <div className="flex justify-center items-center mt-8 space-x-6">
         <button 
           onClick={prevSlide}
-          className="w-14 h-14 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95"
+          className="w-14 h-14 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95 rounded-none"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
@@ -87,7 +85,7 @@ export const HeroCarousel = () => {
               key={i}
               onClick={() => setCurrentSlide(i)}
               className={cn(
-                "h-3 transition-all duration-300",
+                "h-3 transition-all duration-300 rounded-none border-none p-0",
                 currentSlide === i ? "w-10 bg-black" : "w-3 bg-neutral-300"
               )}
             />
@@ -96,7 +94,7 @@ export const HeroCarousel = () => {
 
         <button 
           onClick={nextSlide}
-          className="w-14 h-14 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95"
+          className="w-14 h-14 flex items-center justify-center bg-black text-white hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95 rounded-none"
         >
           <ChevronRight className="w-6 h-6" />
         </button>

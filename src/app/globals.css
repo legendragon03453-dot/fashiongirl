@@ -1,29 +1,35 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  @font-face {
+    font-family: 'Quandco';
+    src: url('https://raw.githubusercontent.com/legendragon03453-dot/fashiongirl/main/Quandco%20400.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   :root {
-    --background: 210 20% 98%;
-    --foreground: 220 5% 10%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
     --card: 0 0% 100%;
-    --card-foreground: 220 5% 10%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 5% 10%;
-    --primary: 220 5% 10%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 270 20% 96%;
-    --secondary-foreground: 220 5% 10%;
-    --muted: 210 20% 90%;
-    --muted-foreground: 220 5% 45%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 45%;
     --accent: 270 20% 63%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 5% 10%;
-    --input: 220 5% 90%;
-    --ring: 220 5% 10%;
+    --border: 0 0% 0%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 0%;
     --radius: 0rem;
   }
 }
@@ -33,10 +39,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-headline;
+  h1, h2 {
+    font-family: 'Quandco', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   }
 }
 

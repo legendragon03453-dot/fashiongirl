@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -16,16 +15,16 @@ export const HistorySection = () => {
           <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
             Fundada em 2004 por Cida e seus filhos Alessandra e Adalberto, a Fashion Girl é uma referência em moda teen. A marca se destacou por investir na produção própria, garantindo qualidade e controle.
           </p>
-          <Link href="#" className="inline-flex items-center justify-center bg-black text-white px-10 py-4 text-xs font-black uppercase tracking-widest hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95">
+          <Link href="#" className="inline-flex items-center justify-center bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95 rounded-none">
             Conhecer a Fashion
           </Link>
         </FadeIn>
         
-        <FadeIn delay={200} className="w-full md:w-1/2 overflow-hidden group">
+        <FadeIn delay={200} className="w-full md:w-1/2 overflow-hidden group rounded-none">
           <img 
-            src="https://picsum.photos/seed/fashiongirlstory/800/600" 
+            src="https://cdn.prod.website-files.com/66bbebe6ac4f47264523021b/66bd1e202c2c5941ba07a2e0_CIDA%20E%20ALE%2020%20ANOS%20(5).png" 
             alt="Cida e Alessandra - 20 Anos Fashion Girl" 
-            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
+            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 rounded-none" 
           />
         </FadeIn>
       </div>

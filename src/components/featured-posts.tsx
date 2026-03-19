@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -45,7 +44,7 @@ export const FeaturedPosts = () => {
         {posts.map((post, i) => (
           <FadeIn key={i} delay={i * 100}>
             <div className="group cursor-pointer">
-              <Link href="#" className="block overflow-hidden mb-4 aspect-[4/5]">
+              <Link href="#" className="block overflow-hidden mb-4 aspect-[4/5] rounded-none">
                 <img 
                   src={post.image} 
                   alt={post.title} 
@@ -53,13 +52,13 @@ export const FeaturedPosts = () => {
                 />
               </Link>
               <div className="flex flex-col">
-                <Link href="#" className="text-[10px] font-black text-neutral-500 uppercase tracking-wider mb-2 hover:text-black transition-colors">
+                <Link href="#" className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2 hover:text-black transition-colors">
                   {post.category}
                 </Link>
-                <Link href="#" className="text-xl font-bold leading-tight mb-3 hover:text-accent transition-colors">
+                <Link href="#" className="text-xl font-bold leading-tight mb-3 hover:text-neutral-600 transition-colors">
                   {post.title}
                 </Link>
-                <div className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                <div className="text-sm text-neutral-500 font-medium">
                   Por <Link href="#" className="text-black hover:underline">{post.author}</Link>
                 </div>
               </div>
@@ -69,7 +68,7 @@ export const FeaturedPosts = () => {
       </div>
 
       <FadeIn className="mt-14 flex justify-center">
-        <Link href="#" className="inline-flex items-center justify-center bg-black text-white px-10 py-4 text-xs font-black uppercase tracking-widest hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95">
+        <Link href="#" className="inline-flex items-center justify-center bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition-transform hover:scale-105 active:scale-95 rounded-none">
           saiba mais
         </Link>
       </FadeIn>

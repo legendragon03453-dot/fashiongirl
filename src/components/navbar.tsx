@@ -1,10 +1,9 @@
-
 "use client"
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,7 +37,7 @@ export const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-[10px] font-bold text-white hover:text-accent transition-colors uppercase tracking-widest"
+                  className="text-[10px] font-bold text-white hover:text-gray-300 transition-colors uppercase tracking-widest"
                 >
                   {link.name}
                 </Link>
@@ -72,7 +71,10 @@ export const Navbar = () => {
               key={link.name}
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl font-bold text-black uppercase hover:text-accent transition-colors"
+              className={cn(
+                "text-2xl font-bold uppercase transition-colors",
+                link.name === 'Blog' ? 'text-gray-400' : 'text-black hover:text-gray-600'
+              )}
             >
               {link.name}
             </Link>
@@ -82,5 +84,3 @@ export const Navbar = () => {
     </>
   );
 };
-
-import { cn } from '@/lib/utils';

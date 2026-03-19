@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -12,7 +11,7 @@ const otherPosts = [
     category: 'Fundraising',
     readTime: '6 min',
     date: 'Jul 27',
-    image: 'https://picsum.photos/seed/blog1/400/300'
+    image: 'https://cdn.prod.website-files.com/63cbe84cb7145e14168d9062/63cbe84cb7145e473c8d9077_olivia-blog-cover-image-10.jpg'
   },
   {
     title: 'Why we love Webflow (and you should, too!)',
@@ -20,7 +19,7 @@ const otherPosts = [
     category: 'Business',
     readTime: '12 min',
     date: 'Nov 22',
-    image: 'https://picsum.photos/seed/blog2/400/300'
+    image: 'https://cdn.prod.website-files.com/63cbe84cb7145e14168d9062/63cbe84cb7145e256b8d9075_olivia-blog-cover-image-9.jpg'
   },
   {
     title: '10 things nobody told you about being a designer',
@@ -28,7 +27,7 @@ const otherPosts = [
     category: 'Advice',
     readTime: '7 min',
     date: 'Jul 27',
-    image: 'https://picsum.photos/seed/blog3/400/300'
+    image: 'https://cdn.prod.website-files.com/63cbe84cb7145e14168d9062/63cbe84cb7145e2ad18d906e_olivia-blog-cover-image-8.jpg'
   },
   {
     title: '7 things about web design your boss wants to know',
@@ -36,7 +35,7 @@ const otherPosts = [
     category: 'Technology',
     readTime: '12 min',
     date: 'Jul 27',
-    image: 'https://picsum.photos/seed/blog4/400/300'
+    image: 'https://cdn.prod.website-files.com/63cbe84cb7145e14168d9062/63cbe84cb7145ea7fc8d906b_olivia-blog-cover-image-7.jpg'
   }
 ];
 
@@ -52,15 +51,15 @@ export const OtherPosts = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10">
         {otherPosts.map((post, i) => (
           <FadeIn key={i} delay={i * 100}>
-            <Link href="#" className="flex flex-col-reverse sm:flex-row gap-6 group border-b border-neutral-100 pb-8 items-center">
+            <Link href="#" className="flex flex-col-reverse sm:flex-row gap-6 group border-b border-neutral-100 pb-8 items-center rounded-none">
               <div className="flex-1 flex flex-col justify-center">
-                <h3 className="text-xl md:text-2xl font-black mb-3 leading-snug group-hover:underline uppercase tracking-tight">
+                <h3 className="text-xl md:text-2xl font-bold mb-3 leading-snug group-hover:underline">
                   {post.title}
                 </h3>
                 <p className="text-neutral-600 mb-4 line-clamp-2 text-sm font-medium">
                   {post.excerpt}
                 </p>
-                <div className="flex flex-wrap items-center text-[10px] text-neutral-500 font-black tracking-widest uppercase gap-2">
+                <div className="flex flex-wrap items-center text-[10px] text-neutral-500 font-bold tracking-widest uppercase gap-2">
                   <span>{post.category}</span>
                   <span>·</span>
                   <span>{post.readTime}</span>
@@ -68,11 +67,11 @@ export const OtherPosts = () => {
                   <span>{post.date}</span>
                 </div>
               </div>
-              <div className="w-full sm:w-48 aspect-square sm:aspect-[4/3] overflow-hidden shrink-0 bg-neutral-100">
+              <div className="w-full sm:w-48 aspect-square sm:aspect-[4/3] overflow-hidden shrink-0 bg-neutral-100 rounded-none">
                 <img 
                   src={post.image} 
                   alt={post.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 rounded-none" 
                 />
               </div>
             </Link>
