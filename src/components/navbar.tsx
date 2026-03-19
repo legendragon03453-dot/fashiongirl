@@ -10,10 +10,7 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Início', href: '#' },
-    { name: 'Nossa História', href: '#' },
     { name: 'Catálogo', href: '#' },
-    { name: 'Depoimentos', href: '#' },
-    { name: 'FAQ', href: '#' },
     { name: 'Blog', href: '#' },
   ];
 
