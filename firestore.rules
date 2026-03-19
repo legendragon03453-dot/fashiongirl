@@ -1,0 +1,146 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * FASHION GIRL BLOG - SECURITY RULES
+     *
+     * CORE PHILOSOPHY:
+     * This ruleset implements a Role-Based Access Control (RBAC) model driven by the 
+     * existence of administrative records. It prioritizes public availability for 
+     * published content while strictly guarding the editorial management interface.
+     *
+     * DATA STRUCTURE:
+     * - /admin_users/{userId}: A registry of UIDs that have editorial/admin power.
+     * - /categories & /authors: Publicly readable metadata for the blog.
+     * - /blog_posts: The primary content repository.
+     * - /blog_posts/.../content_blocks: Modular content nested under posts.
+     *
+     * KEY SECURITY DECISIONS:
+     * 1. DBAC (Document-Based Access Control): Administrative rights are granted
+     *    by the presence of a user's UID in the /admin_users collection.
+     * 2. Visibility Toggling: Public "list" and "get" operations on blog posts are 
+     *    automatically restricted to documents where 'status' is 'published'.
+     * 3. Inheritance: Subcollections (blocks and links) inherit their read 
+     *    permissions from the 'status' of their parent blog post.
+     * 4. Relational Integrity: On creation, we ensure critical fields like 
+     *    'authorId' or 'blogPostId' are present to maintain data links.
+     *
+     * DENORMALIZATION FOR AUTHORIZATION:
+     * - The 'status' field is kept on the main BlogPost document to allow fast, 
+     *   non-joined checks for public visibility.
+     */
+
+    // --- HELPER FUNCTIONS ---
+
+    /** 
+     * @description Checks if the user is authenticated. 
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** 
+     * @description Checks if the current user's UID exists in the admin_users collection.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admin_users/$(request.auth.uid));
+    }
+
+    /** 
+     * @description Checks if a specific blog post is published using a lookup.
+     */
+    function isPostPublished(postId) {
+      return get(/databases/$(database)/documents/blog_posts/$(postId)).data.status == 'published';
+    }
+
+    /** 
+     * @description Combines admin check with existence check for updates/deletes.
+     */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
+    }
+
+    // --- COLLECTION MATCHES ---
+
+    /**
+     * @description Controls administrative privileges. Existence here equals Admin role.
+     * @path /admin_users/{userId}
+     * @allow (get) If the user is checking their own admin status.
+     * @deny (list) Listing all admins is forbidden to prevent user discovery.
+     * @principle DBAC (Document-Based Access Control) for roles.
+     */
+    match /admin_users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow list: if false;
+      allow create, update, delete: if false; // Admin bootstrapping should be manual or via CLI
+    }
+
+    /**
+     * @description Public categories used to filter blog content.
+     * @path /categories/{categoryId}
+     * @allow (get, list) For all visitors to populate menus/filters.
+     * @allow (write) Only for users in the admin_users collection.
+     * @principle Public read with owner-only (admin) writes.
+     */
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Profiles of content creators.
+     * @path /authors/{authorId}
+     * @allow (get, list) For all visitors to view author bios.
+     * @allow (write) Only for administrators.
+     * @principle Public read with administrative write control.
+     */
+    match /authors/{authorId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Main blog post content. Supports draft/published workflows.
+     * @path /blog_posts/{blogPostId}
+     * @allow (get, list) If the post is 'published' OR the user is an admin.
+     * @allow (create) If the user is an admin and provides an authorId.
+     * @principle Visibility controlled by state (status) and role (isAdmin).
+     */
+    match /blog_posts/{blogPostId} {
+      allow get: if (resource.data.status == 'published') || isAdmin();
+      allow list: if (resource.data.status == 'published') || isAdmin();
+      allow create: if isAdmin() && request.resource.data.authorId != null;
+      allow update: if isExistingAdmin() && request.resource.data.authorId == resource.data.authorId;
+      allow delete: if isExistingAdmin();
+
+      /**
+       * @description Modular content pieces (text, images, quotes) within a post.
+       * @path /blog_posts/{blogPostId}/content_blocks/{contentBlockId}
+       * @allow (get, list) If parent post is published OR user is admin.
+       * @principle Hierarchical access inheritance via parent lookup.
+       */
+      match /content_blocks/{contentBlockId} {
+        allow get, list: if isAdmin() || isPostPublished(blogPostId);
+        allow create: if isAdmin() && request.resource.data.blogPostId == blogPostId;
+        allow update: if isExistingAdmin() && request.resource.data.blogPostId == resource.data.blogPostId;
+        allow delete: if isExistingAdmin();
+
+        /**
+         * @description Links nested within a specific content block.
+         * @path /blog_posts/{blogPostId}/content_blocks/{contentBlockId}/link_items/{linkItemId}
+         * @allow (get, list) If grandparent post is published OR user is admin.
+         * @principle Multi-level access inheritance.
+         */
+        match /link_items/{linkItemId} {
+          allow get, list: if isAdmin() || isPostPublished(blogPostId);
+          allow create: if isAdmin() && request.resource.data.contentBlockId == contentBlockId;
+          allow update: if isExistingAdmin() && request.resource.data.contentBlockId == resource.data.contentBlockId;
+          allow delete: if isExistingAdmin();
+        }
+      }
+    }
+  }
+}

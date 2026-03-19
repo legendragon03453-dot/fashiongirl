@@ -1,0 +1,329 @@
+{
+  "entities": {
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
+      "type": "object",
+      "description": "Represents a classification for blog posts, helping to organize content by topic.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Category entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the category (e.g., 'Tendências', 'Lifestyle')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of what this category covers."
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Author": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Author",
+      "type": "object",
+      "description": "Represents an author who writes blog posts for the FashionGirl Blog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Author entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the author."
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biographical sketch of the author."
+        },
+        "profileImageUrl": {
+          "type": "string",
+          "description": "URL to the author's profile picture.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "BlogPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BlogPost",
+      "type": "object",
+      "description": "Represents a single blog post published on the FashionGirl Blog, containing its content and metadata.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the BlogPost entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The main title of the blog post."
+        },
+        "slug": {
+          "type": "string",
+          "description": "A URL-friendly identifier for the blog post, derived from the title."
+        },
+        "featuredImageUrl": {
+          "type": "string",
+          "description": "The URL of the main image displayed prominently with the blog post (e.g., in carousels, listings).",
+          "format": "uri"
+        },
+        "excerpt": {
+          "type": "string",
+          "description": "A short summary or snippet of the blog post content, used for listings and previews."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current publication status of the blog post ('draft' or 'published').",
+          "format": "enum"
+        },
+        "publishDate": {
+          "type": "string",
+          "description": "The date and time when the blog post was first published.",
+          "format": "date-time"
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "description": "The date and time when the blog post was last updated.",
+          "format": "date-time"
+        },
+        "readTimeMinutes": {
+          "type": "number",
+          "description": "The estimated reading time for the blog post in minutes."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Reference to the Author who wrote this blog post. (Relationship: Author 1:N BlogPost)"
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Reference to the primary Category this blog post belongs to. (Relationship: Category 1:N BlogPost)"
+        },
+        "contentBlocks": {
+          "type": "array",
+          "description": "An ordered list of content blocks that compose the body of the blog post, allowing for rich media and text.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "featuredImageUrl",
+        "excerpt",
+        "status",
+        "publishDate",
+        "authorId",
+        "categoryId",
+        "contentBlocks"
+      ]
+    },
+    "ContentBlock": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContentBlock",
+      "type": "object",
+      "description": "Represents a modular unit of content within a blog post, such as a paragraph, heading, image, video, quote, or a list of links.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ContentBlock entity."
+        },
+        "blogPostId": {
+          "type": "string",
+          "description": "Reference to the BlogPost this content block belongs to. (Relationship: BlogPost 1:N ContentBlock)"
+        },
+        "order": {
+          "type": "number",
+          "description": "The sequential order of this content block within the blog post content."
+        },
+        "type": {
+          "type": "string",
+          "description": "The specific type of content block (e.g., 'heading', 'paragraph', 'image', 'video', 'quote', 'links').",
+          "format": "enum"
+        },
+        "fontStyle": {
+          "type": "string",
+          "description": "The specific font style applied to this content block, affecting its rendering on the frontend ('helvetica' for modern, 'quandco' for classic).",
+          "format": "enum"
+        },
+        "textValue": {
+          "type": "string",
+          "description": "The textual content for text-based blocks (heading, subtitle, paragraph, quote)."
+        },
+        "mediaUrl": {
+          "type": "string",
+          "description": "The URL for image or video blocks. This could be an image URL or a video embed URL (e.g., YouTube/Vimeo).",
+          "format": "uri"
+        },
+        "linkItems": {
+          "type": "array",
+          "description": "An array of link objects for 'links' type content blocks, each containing a label and a URL.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "blogPostId",
+        "order",
+        "type",
+        "fontStyle"
+      ]
+    },
+    "LinkItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LinkItem",
+      "type": "object",
+      "description": "Represents a single link with a display label and a URL, typically used within a 'links' content block.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the LinkItem entity."
+        },
+        "contentBlockId": {
+          "type": "string",
+          "description": "Reference to the ContentBlock this link item belongs to. (Relationship: ContentBlock 1:N LinkItem)"
+        },
+        "label": {
+          "type": "string",
+          "description": "The display text for the link."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL the link points to.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "contentBlockId",
+        "label",
+        "url"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/admin_users/{userId}",
+        "definition": {
+          "entityName": "AdminUser",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user IDs of administrators. The existence of a document in this collection grants administrative privileges within the application. Access is strictly controlled by request.auth.uid for DBAC."
+        }
+      },
+      {
+        "path": "/categories/{categoryId}",
+        "definition": {
+          "entityName": "Category",
+          "schema": {
+            "$ref": "#/backend/entities/Category"
+          },
+          "description": "Manages blog post categories. Publicly readable for displaying on the frontend; only administrators can create, update, or delete categories.",
+          "params": [
+            {
+              "name": "categoryId",
+              "description": "The unique identifier for a specific blog category."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/authors/{authorId}",
+        "definition": {
+          "entityName": "Author",
+          "schema": {
+            "$ref": "#/backend/entities/Author"
+          },
+          "description": "Stores information about authors of blog posts. Publicly readable to display author profiles; only administrators can create, update, or delete author details.",
+          "params": [
+            {
+              "name": "authorId",
+              "description": "The unique identifier for a specific author."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/blog_posts/{blogPostId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/backend/entities/BlogPost"
+          },
+          "description": "Contains all blog posts, including drafts and published content. Publicly readable only if 'status' is 'published'. Full read/write/delete access is restricted to administrators. Includes denormalized 'authorId' and 'categoryId' for efficient authorization and querying.",
+          "params": [
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier for a specific blog post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/blog_posts/{blogPostId}/content_blocks/{contentBlockId}",
+        "definition": {
+          "entityName": "ContentBlock",
+          "schema": {
+            "$ref": "#/backend/entities/ContentBlock"
+          },
+          "description": "A subcollection for each blog post, holding its structured content blocks (e.g., paragraphs, images, quotes). Read access depends on the parent blog post's 'status' (must be 'published' for public reads); full management is restricted to administrators.",
+          "params": [
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier of the parent blog post."
+            },
+            {
+              "name": "contentBlockId",
+              "description": "The unique identifier for a specific content block within the blog post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/blog_posts/{blogPostId}/content_blocks/{contentBlockId}/link_items/{linkItemId}",
+        "definition": {
+          "entityName": "LinkItem",
+          "schema": {
+            "$ref": "#/backend/entities/LinkItem"
+          },
+          "description": "A sub-subcollection for link items, specifically used within 'links' type content blocks. Access is inherited from its parent content block and ultimately the blog post (public read if post is published; admin for management).",
+          "params": [
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier of the grandparent blog post."
+            },
+            {
+              "name": "contentBlockId",
+              "description": "The unique identifier of the parent content block."
+            },
+            {
+              "name": "linkItemId",
+              "description": "The unique identifier for a specific link item within the content block."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure for the FashionGirl Blog adheres to the core design principles by emphasizing Authorization Independence, Structural Segregation, and consistent Access Modeling. Administrative users are managed via a dedicated `/admin_users/{userId}` collection, leveraging 'Existence over Content' for role-based access control (DBAC). All public-facing entities like `/categories/{categoryId}` and `/authors/{authorId}` are designed to be globally readable, simplifying public access rules.\n\nFor blog posts, the `/blog_posts/{blogPostId}` collection stores all posts, regardless of their publication status. Authorization independence for blog posts is achieved by storing critical authorization data directly within each `BlogPost` document, such as `status` (e.g., 'draft', 'published') and `authorId`. This eliminates the need for `get()` calls to other collections when determining read/write access for a specific post. For instance, public read access can be granted if `resource.data.status == 'published'`, while admin write access checks `isAdmin()`, all without cross-document lookups for the main `BlogPost` document.\n\nSubcollections, such as `/blog_posts/{blogPostId}/content_blocks/{contentBlockId}` and `/blog_posts/{blogPostId}/content_blocks/{contentBlockId}/link_items/{linkItemId}`, maintain a hierarchical structure. While these subcollections inherently depend on their parent `BlogPost` for context, access rules are designed to minimize `get()` calls. For public reads of these nested content items, a single `get()` to the immediate parent `blog_posts/{blogPostId}` is used to check its `status` (e.g., if the parent post is 'published'). For admin operations (create, update, delete) on content blocks or link items, the `isAdmin()` function is used. This approach provides a balance between extreme denormalization (copying post status/author into *every* content block/link item) and overly complex, multi-level `get()` dependencies, which can be expensive and hinder atomic operations. The use of a single `get()` to the immediate parent for status inheritance is a widely accepted and practical pattern in Firestore, preserving the spirit of Authorization Independence by avoiding complex, non-local lookups.\n\nQAPs (Query as s Pipelined Security Filter) are supported through structural segregation and explicit status fields. For public users, queries against `/blog_posts` would include a filter like `where('status', '==', 'published')`. The security rules would then enforce that `list` operations only return documents where `status` is 'published' for unauthenticated users, effectively making the rules the 'pipelines' for data access rather than filters applied after retrieval. All documents in public collections (`/categories`, `/authors`) implicitly pass QAPs as they are intended for full public read access. Admin users, identified by their presence in `/admin_users`, have broader `list` and `get` access across all collections and statuses, ensuring that the CMS functionality is fully supported while maintaining strict public data integrity."
+  }
+}
