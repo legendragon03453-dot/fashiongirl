@@ -1,174 +1,130 @@
-/**
- * Firestore Security Rules
- *
- * Core Philosophy:
- * This ruleset implements a "Public Read, Admin Write" model. The application serves as a
- * public-facing content platform where all primary entities (blog posts, authors, categories, etc.)
- * are accessible to any user, including anonymous visitors. Administrative control is 
- * centralized through a specific collection that maps user UIDs to admin privileges.
- *
- * Data Structure:
- * - Content collections (blogPosts, authors, categories, products, staticPages, faqs, testimonials)
- *   are top-level and flat for query efficiency.
- * - Authorization is managed via the /roles_admin/{uid} collection.
- *
- * Key Security Decisions:
- * - Public Access: Read operations (get and list) are open for all content to support 
- *   SEO and unauthenticated browsing.
- * - DBAC (Database Access Control): Write access is strictly guarded by checking for the 
- *   existence of a document in the /roles_admin collection matching the requester's UID.
- * - Relational Integrity: On creation and update, the rules ensure that the document's 
- *   internal 'id' field remains consistent with the document's path ID.
- * - Prototyping Flexibility: Data types and non-relational fields are not validated to 
- *   allow for rapid schema iteration.
- *
- * Denormalization for Authorization:
- * - Administrative roles are verified via the /roles_admin collection, serving as 
- *   the single source of truth for write permissions across the entire database.
- */
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    /**
+     * FIRESTORE SECURITY RULES - FASHIONGIRL BLOG & CRM
+     *
+     * Core Philosophy:
+     * This ruleset implements a robust "Global Admin Role" model to support a public fashion blog 
+     * and a private administrative CRM (/painel). It prioritizes Authorization Independence 
+     * by decoupling content access from complex ownership trees, relying instead on a 
+     * centralized roles collection.
+     *
+     * Data Structure:
+     * - Public Content: /authors, /categories, /blog_posts, /products, /carousel_slides.
+     * - Authorization Data: /roles_admin/{userId}.
+     *
+     * Key Security Decisions:
+     * 1. Public Read Access: All blog and product content is globally readable (get and list) 
+     *    to ensure maximum performance and SEO friendliness for unauthenticated visitors.
+     * 2. Administrative Write Access: Every create, update, and delete operation across the 
+     *    entire database is restricted to users whose UID exists in the /roles_admin collection.
+     * 3. Authorization Independence: Admin status is verified via an atomic exists() check 
+     *    on the /roles_admin collection, preventing "permission leakage" from document-level data.
+     *
+     * Denormalization for Authorization:
+     * To support the CRM's /painel functionality, the system uses a high-performance DBAC 
+     * (Database Access Control) pattern. By using the User's UID as the document ID in 
+     * /roles_admin, the rules can verify permissions with a single, cached lookup without 
+     * needing to query document fields.
+     */
+
     // --- Helper Functions ---
 
-    /** @description Checks if the request is from an authenticated user. */
+    /** @description Checks if the request is from a signed-in user. */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /** @description Checks if the authenticated user has a document in the roles_admin collection. */
+    /** @description Verifies if the authenticated user is registered as an administrator. */
     function isAdmin() {
       return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
-    /** @description Checks if the authenticated user's UID matches the provided userId. */
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    /** @description Ensures the document ID in the data matches the ID in the path during creation. */
-    function isIdConsistent(id) {
-      return request.resource.data.id == id;
-    }
-
-    /** @description Ensures the internal ID field remains immutable during updates. */
-    function isIdImmutable() {
-      return request.resource.data.id == resource.data.id;
+    /** @description Ensures the user is an admin and the document being modified/deleted exists. */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
     }
 
     // --- Collection Rules ---
 
     /**
-     * @description Rules for blog posts. Publicly readable, admin-only writes.
-     * @path /blogPosts/{blogPostId}
-     * @allow (list) Any user can list blog posts.
-     * @deny (create) Non-admin user attempts to create a post.
-     * @principle Role-based write access with path-id consistency.
+     * @description Rules for global admin role definitions.
+     * @path /roles_admin/{userId}
+     * @allow (get) Admin user reads their own or another admin's role status.
+     * @deny (create) Unauthenticated user attempts to grant themselves admin rights.
+     * @principle Structural Segregation: Keeps authorization logic separate from application data.
      */
-    match /blogPosts/{blogPostId} {
-      allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(blogPostId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
+    match /roles_admin/{userId} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
     }
 
     /**
-     * @description Rules for authors. Publicly readable, admin-only writes.
+     * @description Rules for blog post authors.
      * @path /authors/{authorId}
-     * @allow (get) Any user can view an author profile.
-     * @deny (update) Signed-in non-admin user attempts to modify author info.
-     * @principle Role-based write access.
+     * @allow (get, list) Public visitor views the list of authors.
+     * @deny (update) Non-admin user attempts to change an author's bio.
+     * @principle Global Role-Based Writes: Restricts data modifications to verified staff.
      */
     match /authors/{authorId} {
       allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(authorId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
     }
 
     /**
-     * @description Rules for categories. Publicly readable, admin-only writes.
+     * @description Rules for blog and product categories.
      * @path /categories/{categoryId}
-     * @allow (list) Public users can list categories for navigation.
-     * @deny (delete) Admin attempts to delete a non-existent category.
-     * @principle Public read access with strict admin management.
+     * @allow (get, list) Any user browses categories like "Estilo" or "Tendências".
+     * @deny (create) Authenticated non-admin user attempts to add a new category.
+     * @principle Public Read with Owner-Only Writes (Admin-as-Owner).
      */
     match /categories/{categoryId} {
       allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(categoryId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
     }
 
     /**
-     * @description Rules for products in the catalog. Publicly readable, admin-only writes.
+     * @description Rules for individual blog articles.
+     * @path /blog_posts/{blogPostId}
+     * @allow (get) Unauthenticated visitor reads a specific article.
+     * @deny (delete) Any user without admin privileges tries to remove a post.
+     * @principle High-Performance List: Public list allows for efficient fetching of the feed.
+     */
+    match /blog_posts/{blogPostId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Rules for fashion products in the catalog.
      * @path /products/{productId}
-     * @allow (create) Admin user creates a new catalog item.
-     * @deny (create) User attempts to create product with mismatched ID.
-     * @principle Relational integrity for top-level catalog items.
+     * @allow (list) Public user scrolls through the product catalog.
+     * @deny (update) Attempting to change a product price without admin status.
+     * @principle Administrative Data Control: Protects commercial data integrity.
      */
     match /products/{productId} {
       allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(productId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
     }
 
     /**
-     * @description Rules for static content pages (About, Contact, etc.).
-     * @path /staticPages/{staticPageId}
-     * @allow (get) Public access for site informational pages.
-     * @deny (update) Non-admin attempts to change page content.
-     * @principle Public content with restricted administrative updates.
+     * @description Rules for homepage carousel slides.
+     * @path /carousel_slides/{slideId}
+     * @allow (get) All users see the hero carousel on the homepage.
+     * @deny (create) Malicious user attempts to inject a slide with an external link.
+     * @principle Strict Operational Security: Only admins manage marketing materials.
      */
-    match /staticPages/{staticPageId} {
+    match /carousel_slides/{slideId} {
       allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(staticPageId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
-    }
-
-    /**
-     * @description Rules for Frequently Asked Questions.
-     * @path /faqs/{faqId}
-     * @allow (list) All users can view FAQs.
-     * @deny (create) Anonymous user attempts to create an FAQ.
-     * @principle Role-based content management.
-     */
-    match /faqs/{faqId} {
-      allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(faqId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
-    }
-
-    /**
-     * @description Rules for customer testimonials.
-     * @path /testimonials/{testimonialId}
-     * @allow (get) Any user can read testimonials.
-     * @deny (delete) Admin attempts to delete without resource existence check.
-     * @principle Ensures administrative oversight for social proof content.
-     */
-    match /testimonials/{testimonialId} {
-      allow get, list: if true;
-      allow create: if isAdmin() && isIdConsistent(testimonialId);
-      allow update: if isAdmin() && resource != null && isIdImmutable();
-      allow delete: if isAdmin() && resource != null;
-    }
-
-    /**
-     * @description Security rules for the administrative roles collection.
-     * @path /roles_admin/{uid}
-     * @allow (get) Admins can check their own status.
-     * @deny (list) Prevent discovery of all administrative UIDs.
-     * @principle Private, owner-only access for authorization tokens.
-     */
-    match /roles_admin/{uid} {
-      allow get: if isOwner(uid);
-      allow list: if false;
-      allow create, update, delete: if false;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
     }
   }
 }
