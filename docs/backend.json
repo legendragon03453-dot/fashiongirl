@@ -1,34 +1,10 @@
 {
   "entities": {
-    "Category": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Category",
-      "type": "object",
-      "description": "Represents a classification for blog posts, helping to organize content by topic.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Category entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the category (e.g., 'Tendências', 'Lifestyle')."
-        },
-        "description": {
-          "type": "string",
-          "description": "A brief description of what this category covers."
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ]
-    },
     "Author": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Author",
       "type": "object",
-      "description": "Represents an author who writes blog posts for the FashionGirl Blog.",
+      "description": "Represents an author of blog posts.",
       "properties": {
         "id": {
           "type": "string",
@@ -40,7 +16,7 @@
         },
         "bio": {
           "type": "string",
-          "description": "A short biographical sketch of the author."
+          "description": "A short biographical description of the author."
         },
         "profileImageUrl": {
           "type": "string",
@@ -53,11 +29,45 @@
         "name"
       ]
     },
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
+      "type": "object",
+      "description": "Represents a classification category for blog posts and products.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Category entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the category (e.g., 'Tendências', 'Dicas de Estilo')."
+        },
+        "slug": {
+          "type": "string",
+          "description": "A URL-friendly version of the category name."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the category."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL for an image representing this category, used in featured category sections.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "slug"
+      ]
+    },
     "BlogPost": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "BlogPost",
       "type": "object",
-      "description": "Represents a single blog post published on the FashionGirl Blog, containing its content and metadata.",
+      "description": "Represents an article or post on the FashionGirl blog.",
       "properties": {
         "id": {
           "type": "string",
@@ -65,109 +75,97 @@
         },
         "title": {
           "type": "string",
-          "description": "The main title of the blog post."
+          "description": "The title of the blog post."
         },
         "slug": {
           "type": "string",
-          "description": "A URL-friendly identifier for the blog post, derived from the title."
-        },
-        "featuredImageUrl": {
-          "type": "string",
-          "description": "The URL of the main image displayed prominently with the blog post (e.g., in carousels, listings).",
-          "format": "uri"
+          "description": "A URL-friendly version of the blog post title."
         },
         "excerpt": {
           "type": "string",
-          "description": "A short summary or snippet of the blog post content, used for listings and previews."
+          "description": "A brief summary or excerpt of the blog post content."
         },
-        "status": {
+        "content": {
           "type": "string",
-          "description": "The current publication status of the blog post ('draft' or 'published').",
-          "format": "enum"
+          "description": "The full content of the blog post, possibly in HTML or Markdown format."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the main image associated with the blog post.",
+          "format": "uri"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Reference to the Author of this blog post. (Relationship: Author 1:N BlogPost)"
+        },
+        "categoryIds": {
+          "type": "array",
+          "description": "References to Categories associated with this blog post. (Relationship: Category N:N BlogPost)",
+          "items": {
+            "type": "string"
+          }
         },
         "publishDate": {
           "type": "string",
-          "description": "The date and time when the blog post was first published.",
-          "format": "date-time"
-        },
-        "lastModifiedDate": {
-          "type": "string",
-          "description": "The date and time when the blog post was last updated.",
+          "description": "The date and time when the blog post was published.",
           "format": "date-time"
         },
         "readTimeMinutes": {
           "type": "number",
-          "description": "The estimated reading time for the blog post in minutes."
+          "description": "Estimated reading time of the blog post in minutes."
         },
-        "authorId": {
-          "type": "string",
-          "description": "Reference to the Author who wrote this blog post. (Relationship: Author 1:N BlogPost)"
-        },
-        "categoryId": {
-          "type": "string",
-          "description": "Reference to the primary Category this blog post belongs to. (Relationship: Category 1:N BlogPost)"
-        },
-        "contentBlocks": {
-          "type": "array",
-          "description": "An ordered list of content blocks that compose the body of the blog post, allowing for rich media and text.",
-          "items": {
-            "type": "string"
-          }
+        "isFeatured": {
+          "type": "boolean",
+          "description": "Indicates if the blog post should be highlighted in featured sections."
         }
       },
       "required": [
         "id",
         "title",
         "slug",
-        "featuredImageUrl",
-        "excerpt",
-        "status",
-        "publishDate",
+        "content",
+        "imageUrl",
         "authorId",
-        "categoryId",
-        "contentBlocks"
+        "categoryIds",
+        "publishDate",
+        "readTimeMinutes"
       ]
     },
-    "ContentBlock": {
+    "Product": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ContentBlock",
+      "title": "Product",
       "type": "object",
-      "description": "Represents a modular unit of content within a blog post, such as a paragraph, heading, image, video, quote, or a list of links.",
+      "description": "Represents an item in the FashionGirl product catalog for showcase.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the ContentBlock entity."
+          "description": "Unique identifier for the Product entity."
         },
-        "blogPostId": {
+        "name": {
           "type": "string",
-          "description": "Reference to the BlogPost this content block belongs to. (Relationship: BlogPost 1:N ContentBlock)"
+          "description": "The name of the product."
         },
-        "order": {
-          "type": "number",
-          "description": "The sequential order of this content block within the blog post content."
-        },
-        "type": {
+        "slug": {
           "type": "string",
-          "description": "The specific type of content block (e.g., 'heading', 'paragraph', 'image', 'video', 'quote', 'links').",
-          "format": "enum"
+          "description": "A URL-friendly version of the product name."
         },
-        "fontStyle": {
+        "description": {
           "type": "string",
-          "description": "The specific font style applied to this content block, affecting its rendering on the frontend ('helvetica' for modern, 'quandco' for classic).",
-          "format": "enum"
+          "description": "A description of the product."
         },
-        "textValue": {
+        "imageUrl": {
           "type": "string",
-          "description": "The textual content for text-based blocks (heading, subtitle, paragraph, quote)."
-        },
-        "mediaUrl": {
-          "type": "string",
-          "description": "The URL for image or video blocks. This could be an image URL or a video embed URL (e.g., YouTube/Vimeo).",
+          "description": "URL to the main image of the product.",
           "format": "uri"
         },
-        "linkItems": {
+        "linkUrl": {
+          "type": "string",
+          "description": "An external URL to the product's detail page or purchase link.",
+          "format": "uri"
+        },
+        "categoryIds": {
           "type": "array",
-          "description": "An array of link objects for 'links' type content blocks, each containing a label and a URL.",
+          "description": "References to Categories associated with this product. (Relationship: Category N:N Product)",
           "items": {
             "type": "string"
           }
@@ -175,41 +173,97 @@
       },
       "required": [
         "id",
-        "blogPostId",
-        "order",
-        "type",
-        "fontStyle"
+        "name",
+        "slug",
+        "imageUrl",
+        "linkUrl"
       ]
     },
-    "LinkItem": {
+    "HeroCarouselSlide": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "LinkItem",
+      "title": "HeroCarouselSlide",
       "type": "object",
-      "description": "Represents a single link with a display label and a URL, typically used within a 'links' content block.",
+      "description": "Represents an individual slide in the main homepage hero carousel.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the LinkItem entity."
+          "description": "Unique identifier for the HeroCarouselSlide entity."
         },
-        "contentBlockId": {
+        "title": {
           "type": "string",
-          "description": "Reference to the ContentBlock this link item belongs to. (Relationship: ContentBlock 1:N LinkItem)"
+          "description": "The main title displayed on the carousel slide."
         },
-        "label": {
+        "imageUrl": {
           "type": "string",
-          "description": "The display text for the link."
-        },
-        "url": {
-          "type": "string",
-          "description": "The URL the link points to.",
+          "description": "URL to the background image for the carousel slide.",
           "format": "uri"
+        },
+        "altText": {
+          "type": "string",
+          "description": "Alternative text for the slide image, for accessibility."
+        },
+        "linkUrl": {
+          "type": "string",
+          "description": "The URL where clicking on the slide should navigate.",
+          "format": "uri"
+        },
+        "order": {
+          "type": "number",
+          "description": "The display order of the slide within the carousel."
         }
       },
       "required": [
         "id",
-        "contentBlockId",
-        "label",
-        "url"
+        "title",
+        "imageUrl",
+        "altText",
+        "linkUrl",
+        "order"
+      ]
+    },
+    "Page": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Page",
+      "type": "object",
+      "description": "Represents static content pages of the application, such as 'About Us', 'Contact', or 'FAQ'.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Page entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the page."
+        },
+        "slug": {
+          "type": "string",
+          "description": "A URL-friendly version of the page title (e.g., 'nossa-historia')."
+        },
+        "content": {
+          "type": "string",
+          "description": "The full content of the page, typically in HTML or Markdown format."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to a primary image associated with the page, if any.",
+          "format": "uri"
+        },
+        "imageAltText": {
+          "type": "string",
+          "description": "Alternative text for the page's primary image."
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "The date and time when the page content was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "content",
+        "lastUpdated"
       ]
     }
   },
@@ -222,13 +276,19 @@
   "firestore": {
     "structure": [
       {
-        "path": "/admin_users/{userId}",
+        "path": "/authors/{authorId}",
         "definition": {
-          "entityName": "AdminUser",
+          "entityName": "Author",
           "schema": {
-            "$ref": "#/backend/entities/User"
+            "$ref": "#/backend/entities/Author"
           },
-          "description": "Stores user IDs of administrators. The existence of a document in this collection grants administrative privileges within the application. Access is strictly controlled by request.auth.uid for DBAC."
+          "description": "Contains details for blog post authors. Accessible to all users for public display.",
+          "params": [
+            {
+              "name": "authorId",
+              "description": "Unique identifier for the Author document."
+            }
+          ]
         }
       },
       {
@@ -238,92 +298,80 @@
           "schema": {
             "$ref": "#/backend/entities/Category"
           },
-          "description": "Manages blog post categories. Publicly readable for displaying on the frontend; only administrators can create, update, or delete categories.",
+          "description": "Contains definitions for content and product categories. Accessible to all users for navigation and filtering.",
           "params": [
             {
               "name": "categoryId",
-              "description": "The unique identifier for a specific blog category."
+              "description": "Unique identifier for the Category document."
             }
           ]
         }
       },
       {
-        "path": "/authors/{authorId}",
-        "definition": {
-          "entityName": "Author",
-          "schema": {
-            "$ref": "#/backend/entities/Author"
-          },
-          "description": "Stores information about authors of blog posts. Publicly readable to display author profiles; only administrators can create, update, or delete author details.",
-          "params": [
-            {
-              "name": "authorId",
-              "description": "The unique identifier for a specific author."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/blog_posts/{blogPostId}",
+        "path": "/blogPosts/{blogPostId}",
         "definition": {
           "entityName": "BlogPost",
           "schema": {
             "$ref": "#/backend/entities/BlogPost"
           },
-          "description": "Contains all blog posts, including drafts and published content. Publicly readable only if 'status' is 'published'. Full read/write/delete access is restricted to administrators. Includes denormalized 'authorId' and 'categoryId' for efficient authorization and querying.",
+          "description": "Stores individual blog articles, including content, images, and metadata. Accessible to all users for public reading.",
           "params": [
             {
               "name": "blogPostId",
-              "description": "The unique identifier for a specific blog post."
+              "description": "Unique identifier for the BlogPost document."
             }
           ]
         }
       },
       {
-        "path": "/blog_posts/{blogPostId}/content_blocks/{contentBlockId}",
+        "path": "/products/{productId}",
         "definition": {
-          "entityName": "ContentBlock",
+          "entityName": "Product",
           "schema": {
-            "$ref": "#/backend/entities/ContentBlock"
+            "$ref": "#/backend/entities/Product"
           },
-          "description": "A subcollection for each blog post, holding its structured content blocks (e.g., paragraphs, images, quotes). Read access depends on the parent blog post's 'status' (must be 'published' for public reads); full management is restricted to administrators.",
+          "description": "Stores product catalog items for display, with links to external purchase pages. Accessible to all users for browsing.",
           "params": [
             {
-              "name": "blogPostId",
-              "description": "The unique identifier of the parent blog post."
-            },
-            {
-              "name": "contentBlockId",
-              "description": "The unique identifier for a specific content block within the blog post."
+              "name": "productId",
+              "description": "Unique identifier for the Product document."
             }
           ]
         }
       },
       {
-        "path": "/blog_posts/{blogPostId}/content_blocks/{contentBlockId}/link_items/{linkItemId}",
+        "path": "/heroCarouselSlides/{slideId}",
         "definition": {
-          "entityName": "LinkItem",
+          "entityName": "HeroCarouselSlide",
           "schema": {
-            "$ref": "#/backend/entities/LinkItem"
+            "$ref": "#/backend/entities/HeroCarouselSlide"
           },
-          "description": "A sub-subcollection for link items, specifically used within 'links' type content blocks. Access is inherited from its parent content block and ultimately the blog post (public read if post is published; admin for management).",
+          "description": "Manages individual slides for the homepage's main hero carousel. Accessible to all users.",
           "params": [
             {
-              "name": "blogPostId",
-              "description": "The unique identifier of the grandparent blog post."
-            },
+              "name": "slideId",
+              "description": "Unique identifier for the HeroCarouselSlide document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/pages/{pageId}",
+        "definition": {
+          "entityName": "Page",
+          "schema": {
+            "$ref": "#/backend/entities/Page"
+          },
+          "description": "Holds content for static application pages (e.g., 'Nossa História', 'Contato', 'FAQ'). Accessible to all users for public reading.",
+          "params": [
             {
-              "name": "contentBlockId",
-              "description": "The unique identifier of the parent content block."
-            },
-            {
-              "name": "linkItemId",
-              "description": "The unique identifier for a specific link item within the content block."
+              "name": "pageId",
+              "description": "Unique identifier for the Page document."
             }
           ]
         }
       }
     ],
-    "reasoning": "The Firestore structure for the FashionGirl Blog adheres to the core design principles by emphasizing Authorization Independence, Structural Segregation, and consistent Access Modeling. Administrative users are managed via a dedicated `/admin_users/{userId}` collection, leveraging 'Existence over Content' for role-based access control (DBAC). All public-facing entities like `/categories/{categoryId}` and `/authors/{authorId}` are designed to be globally readable, simplifying public access rules.\n\nFor blog posts, the `/blog_posts/{blogPostId}` collection stores all posts, regardless of their publication status. Authorization independence for blog posts is achieved by storing critical authorization data directly within each `BlogPost` document, such as `status` (e.g., 'draft', 'published') and `authorId`. This eliminates the need for `get()` calls to other collections when determining read/write access for a specific post. For instance, public read access can be granted if `resource.data.status == 'published'`, while admin write access checks `isAdmin()`, all without cross-document lookups for the main `BlogPost` document.\n\nSubcollections, such as `/blog_posts/{blogPostId}/content_blocks/{contentBlockId}` and `/blog_posts/{blogPostId}/content_blocks/{contentBlockId}/link_items/{linkItemId}`, maintain a hierarchical structure. While these subcollections inherently depend on their parent `BlogPost` for context, access rules are designed to minimize `get()` calls. For public reads of these nested content items, a single `get()` to the immediate parent `blog_posts/{blogPostId}` is used to check its `status` (e.g., if the parent post is 'published'). For admin operations (create, update, delete) on content blocks or link items, the `isAdmin()` function is used. This approach provides a balance between extreme denormalization (copying post status/author into *every* content block/link item) and overly complex, multi-level `get()` dependencies, which can be expensive and hinder atomic operations. The use of a single `get()` to the immediate parent for status inheritance is a widely accepted and practical pattern in Firestore, preserving the spirit of Authorization Independence by avoiding complex, non-local lookups.\n\nQAPs (Query as s Pipelined Security Filter) are supported through structural segregation and explicit status fields. For public users, queries against `/blog_posts` would include a filter like `where('status', '==', 'published')`. The security rules would then enforce that `list` operations only return documents where `status` is 'published' for unauthenticated users, effectively making the rules the 'pipelines' for data access rather than filters applied after retrieval. All documents in public collections (`/categories`, `/authors`) implicitly pass QAPs as they are intended for full public read access. Admin users, identified by their presence in `/admin_users`, have broader `list` and `get` access across all collections and statuses, ensuring that the CMS functionality is fully supported while maintaining strict public data integrity."
+    "reasoning": "The Firestore structure for the FashionGirl Blog is designed to prioritize public readability, scalability, and ease of management, adhering strictly to the core design principles.\n\n**Authorization Independence:** All primary content collections (`/authors`, `/categories`, `/blogPosts`, `/products`, `/heroCarouselSlides`, `/pages`) are designed for public read access. This eliminates the need for complex authorization dependencies (`get()` calls) in security rules for read operations. Since the content is globally accessible to any user (including anonymous), no `request.auth.uid` checks or denormalized authorization fields (like a `members` map or `ownerId` for read access) are required for these collections. This inherently makes read operations atomically independent and simplifies rule debugging. Write access, however, would be restricted to authenticated administrators. For this, a separate `/roles_admin/{userId}` collection would store administrator UIDs, ensuring that write operations on the content collections are authorized independently by checking the existence of `request.auth.uid` in this dedicated role collection, without needing to query parent documents or content-specific authorization fields.\n\n**QAPs (Rules are not Filters):** The structural segregation mandate ensures that all documents within a given collection share the same security posture – in this case, public readability. This means clients can perform `list` operations (queries) on collections like `/blogPosts` or `/products` without needing security rules to filter results based on user permissions. The rules simply allow all reads (`allow read: if true;`), ensuring that any query will return a complete and authorized set of public data. There is no mixing of public posts with private drafts in the same collection that would necessitate complex filtering logic within the rules. Featured content (e.g., `isFeatured` in `BlogPost`) is handled by application-level queries and not by security rules attempting to restrict document visibility. Categories, authors, and carousel slides are also globally readable, supporting efficient `list` operations for navigation and content display."
   }
 }
