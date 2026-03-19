@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -16,7 +17,7 @@ export const CategoryGrid = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {categories.map((cat, i) => (
           <FadeIn key={cat.name} delay={i * 100}>
-            <Link href="#" className="relative block h-32 md:h-48 overflow-hidden group bg-black rounded-none">
+            <Link href="/categoria" className="relative block h-32 md:h-48 overflow-hidden group bg-black rounded-none">
               <img 
                 src={cat.image} 
                 alt={cat.name} 

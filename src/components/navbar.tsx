@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -9,9 +10,10 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Início', href: '#' },
+    { name: 'Início', href: '/' },
+    { name: 'Categoria', href: '/categoria' },
     { name: 'Catálogo', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'Blog', href: '/' },
   ];
 
   return (
@@ -68,10 +70,7 @@ export const Navbar = () => {
               key={link.name}
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
-              className={cn(
-                "text-2xl font-bold uppercase transition-colors",
-                link.name === 'Blog' ? 'text-gray-400' : 'text-black hover:text-gray-600'
-              )}
+              className="text-2xl font-bold uppercase transition-colors text-black hover:text-gray-600"
             >
               {link.name}
             </Link>
