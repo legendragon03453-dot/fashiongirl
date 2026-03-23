@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>CRM - Painel do Blog</title>
+</head>
+<body>
+    <h2>Publicar Novo Post</h2>
+    
+    <form id="form-post">
+        <input type="text" id="titulo" placeholder="Título do Post" required><br><br>
+        <textarea id="conteudo" placeholder="Escreva o texto do blog aqui..." rows="10" required></textarea><br><br>
+        <button type="submit">Publicar no Blog</button>
+    </form>
+
+    <p id="mensagem-sucesso" style="display:none; color:green;">Post publicado com sucesso!</p>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

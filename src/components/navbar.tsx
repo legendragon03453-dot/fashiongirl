@@ -1,13 +1,14 @@
-
-"use client"
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/firebase/index';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useUser();
 
   const navLinks = [
     { name: 'Início', href: '/' },
@@ -15,6 +16,10 @@ export const Navbar = () => {
     { name: 'Catálogo', href: '#' },
     { name: 'Blog', href: '/' },
   ];
+
+  if (user) {
+    navLinks.push({ name: 'Painel', href: '/painel' });
+  }
 
   return (
     <>
